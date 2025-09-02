@@ -1,4 +1,4 @@
-# Panorama Gallery
+# WordPress Panorama Gallery
 
 ![WordPress](https://img.shields.io/badge/WordPress-6.0+-blue) ![PHP](https://img.shields.io/badge/PHP-7.4+-green) ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
 
@@ -55,7 +55,7 @@ Pour une meilleure expérience, insérez des images très larges (par exemple 30
 
 ## English Version
 
-### Panorama Gallery
+### WordPress Panorama Gallery
 
 **Contributors:** La Ferme Graphique  
 **Tags:** block, panorama, horizontal, image, scroll  
