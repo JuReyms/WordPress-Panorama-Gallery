@@ -6,8 +6,8 @@
  * Author:            La Ferme Graphique
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- *Author URI: https://www.lafermegraphique.fr/
- *Plugin URI: https://www.lafermegraphique.fr/
+ * Author URI: https://www.lafermegraphique.fr/
+ * Plugin URI: https://www.lafermegraphique.fr/
  * Text Domain:       panorama-gallery-block-wp
  *
  * @package PanoramaGallery
