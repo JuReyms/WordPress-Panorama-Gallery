@@ -1,0 +1,41 @@
+
+  {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "w0/panorama-gallery",
+	"version": "0.1.0",
+	"title": "Panorama Gallery",
+	"category": "media",
+	"icon": "format-gallery",
+	"description": "Affichez une image panoramique scrollable horizontalement, avec minimap de navigation.",
+	"example": {
+		"attributes": {
+			"image": {
+				"id": 1,
+				"url": "https://via.placeholder.com/2000x400?text=Panorama",
+				"alt": "Panorama example"
+			}
+		}
+	},
+	"attributes": {
+		"image": {
+			"type": "object",
+			"properties": {
+				"id": { "type": "number" },
+				"url": { "type": "string" },
+				"alt": { "type": "string" }
+			},
+			"default": {}
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "panorama-gallery-block-wp",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+  }
+  

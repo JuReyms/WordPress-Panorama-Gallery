@@ -1,0 +1,559 @@
+<?xml version="1.0"?><artefact xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="artefact.xsd" name="Panorama Gallery" slug="panorama-gallery" type="code-package">
+  <file name="readme.txt">
+    <description>This file contains the readme information for the block. It is used to provide information about the block, its usage, and any other relevant details.</description>
+    <content><![CDATA[
+=== Panorama Gallery ===
+Contributors:      La Ferme Graphique
+Tags:              block, panorama, horizontal, image, scroll
+Stable tag:        0.1.0
+License:           GPL-2.0-or-later
+
+Affichez une grande image panoramique scrolable horizontalement, avec une miniature sous l'image pour naviguer rapidement dans la photo (minimap). Compatible desktop (scroll/souris, drag) et tactile (swipe/tap).
+
+== Description ==
+
+Ce bloc permet d'afficher une seule photo panoramique (tres large) avec un scroll horizontal directement sur l'image principale. La miniature en-dessous represente l'image entiere et propose une navigation rapide : cliquez ou touchez une zone pour sauter instantanement vers la partie correspondante du panorama.
+
+Un outil ideal pour publier des panoramas immersifs, des fresques ou tout visuel tres large dans WordPress. La navigation est fluide, adaptée aux interfaces desktop et mobiles.
+
+== Installation ==
+
+1. Upload the plugin files to the `/wp-content/plugins/panorama-gallery` directory, or install the plugin through the WordPress plugins screen directly.
+1. Activate the plugin through the 'Plugins' screen in WordPress
+
+== Frequently Asked Questions ==
+
+= Puis-je afficher plusieurs panoramas ? =
+Non, ce bloc est conçu uniquement pour une seule image panoramique par insertion du bloc. Pour plusieurs panoramas, ajoutez le bloc plusieurs fois.
+
+= La miniature permet-elle une navigation rapide ? =
+Oui, cliquez ou touchez la miniature pour accéder rapidement à une partie de la grande image.
+
+== Screenshots ==
+
+1. Image panoramique scrollable avec minimap
+2. Interface de l'éditeur pour charger la photo
+
+== Changelog ==
+
+= 0.1.0 =
+* Release
+
+== Arbitrary section ==
+
+Pour une meilleure expérience, insérez des images très larges (par exemple 3000px x 600px) dans ce bloc pour maximiser l'effet panorama.
+]]></content>
+  </file>
+  <file name="panorama-gallery.php">
+    <description>This file contains the block registration code in the form of a single block plugin. Any other plugin related functionality should be added to this file. All block rendering functionality should go to the `render.php` file.</description>
+    <content><![CDATA[<?php
+/**
+ * Plugin Name:       Panorama Gallery
+ * Description:       Block to elegantly display panorama images with thumbnail navigation. Offers smooth horizontal scrolling via mouse wheel on desktop and swipe navigation on mobile.
+ * Version:           1.0.0
+ * Author:            La Ferme Graphique
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ *Author URI: https://www.lafermegraphique.fr/
+ *Plugin URI: https://www.lafermegraphique.fr/
+ * Text Domain:       panorama-gallery-block-wp
+ *
+ * @package PanoramaGallery
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+/**
+ * Registers the block using the metadata loaded from the `block.json` file.
+ * Behind the scenes, it registers also all assets so they can be enqueued
+ * through the block editor in the corresponding context.
+ *
+ * @see https://developer.wordpress.org/reference/functions/register_block_type/
+ */
+function panorama_gallery_block_init() {
+	register_block_type( __DIR__ . '/build/' );
+}
+add_action( 'init', 'panorama_gallery_block_init' );
+	]]></content>
+  </file>
+  <file name="block.json">
+    <description>This file contains metadata about the block including its name, title, category, icon, and other properties.</description>
+    <content><![CDATA[
+  {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "w0/panorama-gallery",
+	"version": "0.1.0",
+	"title": "Panorama Gallery",
+	"category": "media",
+	"icon": "format-gallery",
+	"description": "Affichez une image panoramique scrollable horizontalement, avec minimap de navigation.",
+	"example": {
+		"attributes": {
+			"image": {
+				"id": 1,
+				"url": "https://via.placeholder.com/2000x400?text=Panorama",
+				"alt": "Panorama example"
+			}
+		}
+	},
+	"attributes": {
+		"image": {
+			"type": "object",
+			"properties": {
+				"id": { "type": "number" },
+				"url": { "type": "string" },
+				"alt": { "type": "string" }
+			},
+			"default": {}
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "panorama-gallery-block-wp",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+  }
+  ]]></content>
+  </file>
+  <file name="index.js">
+    <description>This file registers the block, specifies the edit and save functions, and loads the block's metadata</description>
+    <content><![CDATA[
+  /**
+ * Registers a new block provided a unique name and an object defining its behavior.
+ */
+import { registerBlockType } from '@wordpress/blocks';
+import './style.scss';
+import Edit from './edit';
+import save from './save';
+import metadata from './block.json';
+
+registerBlockType( metadata.name, {
+	edit: Edit,
+	save,
+} );
+  ]]></content>
+  </file>
+  <file name="edit.js">
+    <description>This file contains the edit function for the block which is responsible for rendering the block in the editor.</description>
+    <content><![CDATA[
+import { __ } from '@wordpress/i18n';
+import { useBlockProps, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
+import { Button } from '@wordpress/components';
+
+export default function Edit( { attributes, setAttributes } ) {
+	const { image = {} } = attributes;
+	const blockProps = useBlockProps();
+
+	const onSelectImage = ( media ) => {
+		if ( !media || !media.url ) return;
+		setAttributes({
+			image: {
+				id: media.id,
+				url: media.url,
+				alt: media.alt || '',
+			}
+		});
+	};
+
+	return (
+		<div { ...blockProps }>
+			{ !image.url ? (
+				<MediaUploadCheck>
+					<MediaUpload
+						onSelect={ onSelectImage }
+						allowedTypes={ [ 'image' ] }
+						multiple={ false }
+						value={ image.id ? [ image.id ] : [] }
+						render={ ( { open } ) => (
+						<Button variant="primary" onClick={ open }>
+							{ __( 'Ajouter une image panoramique', 'panorama-gallery-block-wp' ) }
+						</Button>
+					) }
+				/>
+				</MediaUploadCheck>
+			) : (
+				<figure className="wp-block-w0-panorama-gallery__container">
+					<div className="wp-block-w0-panorama-gallery__panorama-wrapper">
+						<div className="wp-block-w0-panorama-gallery__panorama-scroll">
+							<img
+								src={ image.url }
+								alt={ image.alt || '' }
+								className="wp-block-w0-panorama-gallery__image"
+								draggable={false}
+							/>
+						</div>
+					</div>
+					<div className="wp-block-w0-panorama-gallery__minimap-wrapper">
+						<canvas
+							className="wp-block-w0-panorama-gallery__minimap"
+							height="40"
+						></canvas>
+						<div className="wp-block-w0-panorama-gallery__minimap-viewport"></div>
+					</div>
+					<Button
+						variant="tertiary"
+						style={{ marginTop: 12 }}
+						onClick={ () => setAttributes( { image: {} } ) }
+					>
+						{ __( 'Remplacer l\'image', 'panorama-gallery-block-wp' ) }
+					</Button>
+				</figure>
+			)}
+		</div>
+	);
+}
+]]></content>
+  </file>
+  <file name="save.js">
+    <description>This file contains the save function for the block which is responsible for creating the static result of rendering the block on the client to display the saved result on the front end.</description>
+    <content><![CDATA[
+import { useBlockProps } from '@wordpress/block-editor';
+
+export default function save( { attributes } ) {
+	const { image = {} } = attributes;
+	if ( !image.url ) return null;
+	return (
+		<figure { ...useBlockProps.save() } className="wp-block-w0-panorama-gallery__container">
+			<div className="wp-block-w0-panorama-gallery__panorama-wrapper">
+				<div className="wp-block-w0-panorama-gallery__panorama-scroll">
+					<img
+						src={ image.url }
+						alt={ image.alt || '' }
+						className="wp-block-w0-panorama-gallery__image"
+						draggable={false}
+					/>
+				</div>
+			</div>
+			<div className="wp-block-w0-panorama-gallery__minimap-wrapper">
+				<canvas className="wp-block-w0-panorama-gallery__minimap" height="40"></canvas>
+				<div className="wp-block-w0-panorama-gallery__minimap-viewport"></div>
+			</div>
+		</figure>
+	);
+}
+]]></content>
+  </file>
+  <file name="style.scss">
+    <description>This file contains styles for the block in the front end.</description>
+    <content><![CDATA[.wp-block-w0-panorama-gallery__container {
+	width: 100%;
+	max-width: 100vw;
+	margin: 0 auto;
+	position: relative;
+}
+.wp-block-w0-panorama-gallery__panorama-wrapper {
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	background: #222;
+	border-radius: 8px;
+	position: relative;
+}
+.wp-block-w0-panorama-gallery__panorama-scroll {
+	display: flex;
+	width: fit-content;
+	transition: scroll-left 0.1s;
+	cursor: grab;
+	user-select: none;
+}
+.wp-block-w0-panorama-gallery__image {
+	display: block;
+	width: auto;
+	max-width: unset;
+	height: 350px;
+	object-fit: cover;
+	pointer-events: none;
+	user-drag: none;
+}
+.wp-block-w0-panorama-gallery__minimap-wrapper {
+	margin-top: 8px;
+	position: relative;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: transparent;
+	border-radius: 4px;
+	max-width: 100vw;
+	padding: 0;
+	/* la width du wrapper est dynamique en JS, centrée par "margin: 0 auto", utile si parent trop large */
+	margin-left: auto;
+	margin-right: auto;
+}
+.wp-block-w0-panorama-gallery__minimap {
+	border-radius: 4px;
+	background: #eee;
+	display: block;
+	margin: 0 auto;
+	box-shadow: 0 1px 4px 0 #0001;
+	/* width & height en ligne par JS selon ratio */
+}
+.wp-block-w0-panorama-gallery__minimap-viewport {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 40px;
+	border: 1px solid var(--wp--preset--color--primary, #000000);
+	border-radius: 4px;
+	pointer-events: none;
+	transition: left 0.1s, width 0.1s;
+	z-index: 2;
+	box-shadow: 0 0 0 1.5px var(--wp--preset--color--primary, #000) inset;
+}
+@media (max-width: 600px) {
+	.wp-block-w0-panorama-gallery__image {
+		height: 160px;
+	}
+	.wp-block-w0-panorama-gallery__minimap {
+		height: 32px;
+	}
+	.wp-block-w0-panorama-gallery__minimap-viewport {
+		height: 32px;
+	}
+	.wp-block-w0-panorama-gallery__minimap-wrapper {
+		height: 32px;
+	}
+}
+]]></content>
+  </file>
+  <file name="editor.scss">
+    <description>This file contains styles for the block in the editor.</description>
+    <content><![CDATA[
+.wp-block-w0-panorama-gallery__container {
+	border: 1px dotted #f00;
+	background: #fafafd;
+	padding: 14px 8px;
+}
+]]></content>
+  </file>
+  <file name="view.js">
+    <description>This file contains the view function for the block which is responsible for rendering interactive behaviors of the block on the front end. Ideally using the WordPress interactivity API.</description>
+    <content><![CDATA[// Panoramic image horizontal scroll with true proportional minimap navigation
+(function(){
+	const containers = document.querySelectorAll('.wp-block-w0-panorama-gallery__container');
+
+	containers.forEach(function(container){
+		const panoramaWrapper = container.querySelector('.wp-block-w0-panorama-gallery__panorama-wrapper');
+		const panoramaScroll = container.querySelector('.wp-block-w0-panorama-gallery__panorama-scroll');
+		const img = container.querySelector('.wp-block-w0-panorama-gallery__image');
+		const minimapWrapper = container.querySelector('.wp-block-w0-panorama-gallery__minimap-wrapper');
+		const minimap = container.querySelector('.wp-block-w0-panorama-gallery__minimap');
+		const viewport = container.querySelector('.wp-block-w0-panorama-gallery__minimap-viewport');
+
+		let isDragging = false;
+		let startX = 0;
+		let scrollLeft = 0;
+		let isTouching = false;
+		let touchStartX = 0;
+		let touchScrollLeft = 0;
+
+		let minimapDragging = false;
+		let dragOffsetX = 0;
+		const MINIMAP_HEIGHT = minimap ? minimap.height : 40;
+
+		let lastMinimapWidth = undefined;
+
+		function updateMinimapDimensions() {
+			if (!img || !minimap || !minimapWrapper) return;
+			const naturalW = img.naturalWidth || img.width || 1;
+			const naturalH = img.naturalHeight || img.height || 1;
+			const ratio = naturalW / naturalH;
+			const width = Math.round(MINIMAP_HEIGHT * ratio);
+			minimap.width = width;
+			minimap.height = MINIMAP_HEIGHT;
+			minimap.style.width = width + 'px';
+			minimap.style.height = MINIMAP_HEIGHT + 'px';
+			minimapWrapper.style.height = MINIMAP_HEIGHT + 'px';
+			// la largeur du wrapper colle le canvas pour ne pas fausser la navigation
+			minimapWrapper.style.width = width + 'px';
+			lastMinimapWidth = width;
+		}
+
+		function drawMinimap() {
+			if(!minimap || !img) return;
+			const ctx = minimap.getContext('2d');
+			ctx.clearRect(0,0,minimap.width,minimap.height);
+			ctx.drawImage(img, 0, 0, minimap.width, minimap.height);
+		}
+
+		function syncViewport() {
+			if (!img || !minimap || !viewport || !panoramaWrapper) return;
+			const scrollElm = panoramaWrapper;
+			const renderW = img.offsetWidth;
+			const visibleW = scrollElm.clientWidth;
+			const scrollLeftVal = scrollElm.scrollLeft;
+			const minimapW = minimap.width;
+
+			const visibleRatio = visibleW / renderW;
+			const totalScrollable = renderW - visibleW;
+			const scrollLeftPercent = totalScrollable > 0 ? scrollLeftVal / totalScrollable : 0;
+			const viewportWidth = minimapW * visibleRatio;
+			const viewportLeft = scrollLeftPercent * (minimapW - viewportWidth);
+
+			viewport.style.width = viewportWidth + 'px';
+			viewport.style.left = viewportLeft + 'px';
+			viewport.style.height = minimap.height + 'px';
+		}
+
+		function setPanoramaScrollByMinimap(x) {
+			if (!img || !panoramaWrapper || !minimap) return;
+			const minimapWidth = minimap.width;
+			const renderW = img.offsetWidth;
+			const visibleW = panoramaWrapper.clientWidth;
+
+			const visibleRatio = visibleW / renderW;
+			const viewportWidth = minimapWidth * visibleRatio;
+			const clampX = Math.max(0, Math.min(minimapWidth - viewportWidth, x - viewportWidth/2));
+			const scrollLeftPercent = (clampX) / (minimapWidth - viewportWidth);
+			const totalScrollable = renderW - visibleW;
+			const scrollLeftVal = totalScrollable > 0 ? scrollLeftPercent * totalScrollable : 0;
+			panoramaWrapper.scrollLeft = scrollLeftVal;
+			syncViewport();
+		}
+
+		// DRAG main panorama
+		panoramaWrapper.addEventListener('mousedown', function(e) {
+			isDragging = true;
+			panoramaWrapper.classList.add('is-dragging');
+			startX = e.pageX - panoramaWrapper.offsetLeft;
+			scrollLeft = panoramaWrapper.scrollLeft;
+		});
+		window.addEventListener('mouseup', function(){
+			isDragging = false;
+			panoramaWrapper.classList.remove('is-dragging');
+		});
+		window.addEventListener('mousemove', function(e){
+			if (!isDragging) return;
+			e.preventDefault();
+			const x = e.pageX - panoramaWrapper.offsetLeft;
+			const walk = (startX - x);
+			panoramaWrapper.scrollLeft = scrollLeft + walk;
+			syncViewport();
+		});
+
+		panoramaWrapper.addEventListener('wheel', function(evt){
+			if (Math.abs(evt.deltaY) > Math.abs(evt.deltaX)) {
+				panoramaWrapper.scrollLeft += evt.deltaY;
+				evt.preventDefault();
+			}
+			syncViewport();
+		}, { passive: false });
+
+		panoramaWrapper.addEventListener('touchstart', function(evt){
+			if(evt.touches.length !== 1) return;
+			isTouching = true;
+			touchStartX = evt.touches[0].pageX;
+			touchScrollLeft = panoramaWrapper.scrollLeft;
+		});
+		panoramaWrapper.addEventListener('touchmove', function(evt){
+			if(!isTouching) return;
+			const x = evt.touches[0].pageX;
+			const walk = (touchStartX - x);
+			panoramaWrapper.scrollLeft = touchScrollLeft + walk;
+			syncViewport();
+		});
+		panoramaWrapper.addEventListener('touchend', function(){
+			isTouching = false;
+		});
+
+		// Minimap drag/click/touch
+		minimap.addEventListener('mousedown', function(e) {
+			minimapDragging = true;
+			const rect = minimap.getBoundingClientRect();
+			dragOffsetX = e.clientX - rect.left;
+			setPanoramaScrollByMinimap(dragOffsetX);
+			viewport && (viewport.style.pointerEvents = 'none');
+			document.body.style.userSelect = 'none';
+		});
+		window.addEventListener('mousemove', function(e) {
+			if (!minimapDragging) return;
+			const rect = minimap.getBoundingClientRect();
+			const x = e.clientX - rect.left;
+			setPanoramaScrollByMinimap(x);
+		});
+		window.addEventListener('mouseup', function(){
+			if (minimapDragging) {
+				minimapDragging = false;
+				viewport && (viewport.style.pointerEvents = 'auto');
+				document.body.style.userSelect = '';
+			}
+		});
+
+		minimap.addEventListener('touchstart', function(e){
+			if(!e.touches || !e.touches.length) return;
+			minimapDragging = true;
+			const rect = minimap.getBoundingClientRect();
+			dragOffsetX = e.touches[0].clientX - rect.left;
+			setPanoramaScrollByMinimap(dragOffsetX);
+			viewport && (viewport.style.pointerEvents = 'none');
+			document.body.style.userSelect = 'none';
+		});
+		minimap.addEventListener('touchmove', function(e){
+			if (!minimapDragging) return;
+			const rect = minimap.getBoundingClientRect();
+			const x = e.touches[0].clientX - rect.left;
+			setPanoramaScrollByMinimap(x);
+			e.preventDefault();
+		});
+		window.addEventListener('touchend', function(){
+			if (minimapDragging) {
+				minimapDragging = false;
+				viewport && (viewport.style.pointerEvents = 'auto');
+				document.body.style.userSelect = '';
+			}
+		});
+
+		minimap.addEventListener('click', function(e) {
+			if (minimapDragging) return;
+			const rect = minimap.getBoundingClientRect();
+			const x = (e.clientX - rect.left);
+			setPanoramaScrollByMinimap(x);
+		});
+
+		function updateAll(){
+			if(!minimap || !img) return;
+			updateMinimapDimensions();
+			drawMinimap();
+			syncViewport();
+		}
+		if(img.complete) updateAll();
+		img.addEventListener('load', updateAll);
+		window.addEventListener('resize', updateAll);
+		panoramaWrapper.addEventListener('scroll', syncViewport);
+		setTimeout(updateAll, 150);
+	});
+})();]]></content>
+  </file>
+  <file name="render.php">
+    <description>This file contains the render callback function for the block, which is responsible for rendering the block content on the front end. A render function should exist only if the block is dynamic.</description>
+    <content><![CDATA[]]></content>
+  </file>
+  <file name="package.json">
+    <description>The AI assistant should only edit 'user_provided_block_name_slug', 'description' and resolve 'isDynamicVariant' in this file and ALWAYS INCLUDE IT. This file includes the necessary scripts for building, formatting, and linting the block code. Dependencies are managed at the workspace level via pnpm.</description>
+    <content><![CDATA[
+  {
+	"name": "panorama-gallery",
+	"version": "1.0.0",
+	"description": "Showcase panorama images with horizontal scrolling and a thumbnail navigation.",
+	"author": "La Ferme Graphique",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"build": "wp-scripts build --webpack-copy-php",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start --blocks-manifest"
+	}
+}
+]]></content>
+  </file>
+</artefact>
