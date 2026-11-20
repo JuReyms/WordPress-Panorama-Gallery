@@ -16,6 +16,8 @@ Affiche une grande image panoramique défilable horizontalement, avec une miniat
 | `w0/panorama-gallery` (« Panorama ») | Le bloc à utiliser. |
 | `lfg-block-custom/lfg-block-panorama` (« Panorama (ancien bloc LFG) ») | Reprise de l'ancien bloc de `lfg-block-custom`, pour les articles existants. Absent de l'outil d'insertion. Se transforme en bloc Panorama depuis la barre d'outils. |
 
+Pourquoi deux blocs et deux dossiers : voir [blocks/README.md](blocks/README.md).
+
 Les deux blocs ont le même rendu, fait côté serveur (`includes/render.php`). Le HTML enregistré dans les articles n'est jamais réécrit : il sert à la validation dans l'éditeur.
 
 ## Navigation et accessibilité
