@@ -65,6 +65,15 @@ Aucune étape de construction : le dossier se déploie tel quel.
 2. Contrôler un article à panorama w0 et un article à panorama LFG, sur le site et dans l'éditeur.
 3. Désactiver `lfg-block-custom`.
 
+## Publier une version
+
+1. Passer la version dans l'en-tête de `panorama-gallery.php` et dans `PANORAMA_GALLERY_VERSION`.
+2. Ajouter sa section `## X.Y.Z` en haut de `CHANGELOG.md`.
+3. Commiter et pousser `main`.
+4. Lancer `bash bin/release.sh` : zip dans `dist/`, étiquette `vX.Y.Z`, release GitHub avec le zip et la section du journal.
+
+`bash bin/release.sh --zip` construit seulement le zip. Le zip ne contient que les fichiers commités, sans les fichiers de développement (liste dans `.gitattributes`).
+
 ## Journal
 
 Voir [CHANGELOG.md](CHANGELOG.md). Idées à venir : [ROADMAP.md](ROADMAP.md).
