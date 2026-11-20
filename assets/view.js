@@ -7,6 +7,7 @@
  * - glisser à la souris ;
  * - glisser au doigt : défilement natif du navigateur ;
  * - clavier sur la zone défilante : flèches, Page préc./suiv., Début, Fin ;
+ * - boutons ‹ › (souris) et fondus sur les bords où il reste de l'image ;
  * - miniature cliquable et glissable, qui suit la position.
  * Sans JavaScript, la zone reste défilable nativement.
  */
@@ -141,9 +142,58 @@
 			scroller.scrollTo( { left: target, behavior: scrollBehavior() } );
 		} );
 
+		/* Boutons ‹ › et fondus ------------------------------------------ */
+		var stage = root.querySelector( '.wp-block-w0-panorama-gallery__stage' );
+		var prev = null;
+		var next = null;
+
+		function makeButton( direction ) {
+			var button = document.createElement( 'button' );
+			button.type = 'button';
+			button.className =
+				'wp-block-w0-panorama-gallery__nav wp-block-w0-panorama-gallery__nav--' + direction;
+			// Doublon souris des flèches du clavier, déjà disponibles sur la zone :
+			// hors de l'ordre de tabulation et masqué aux lecteurs d'écran.
+			button.tabIndex = -1;
+			button.setAttribute( 'aria-hidden', 'true' );
+			button.hidden = true;
+			button.innerHTML =
+				'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="' +
+				( direction === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7' ) +
+				'"/></svg>';
+			button.addEventListener( 'click', function () {
+				var sign = direction === 'prev' ? -1 : 1;
+				scroller.scrollTo( {
+					left: scroller.scrollLeft + sign * scroller.clientWidth * 0.8,
+					behavior: scrollBehavior(),
+				} );
+			} );
+			stage.appendChild( button );
+			return button;
+		}
+
+		if ( stage ) {
+			prev = makeButton( 'prev' );
+			next = makeButton( 'next' );
+		}
+
+		function syncEdges() {
+			if ( ! stage ) {
+				return;
+			}
+			var max = maxScroll();
+			var atStart = scroller.scrollLeft <= 1;
+			var atEnd = scroller.scrollLeft >= max - 1;
+			stage.classList.toggle( 'has-more-start', max > 0 && ! atStart );
+			stage.classList.toggle( 'has-more-end', max > 0 && ! atEnd );
+			prev.hidden = max <= 0 || atStart;
+			next.hidden = max <= 0 || atEnd;
+		}
+
 		/* Miniature ---------------------------------------------------- */
 		function syncFrame() {
 			pending = false;
+			syncEdges();
 			if ( ! frame || ! mapWidth ) {
 				return;
 			}
@@ -169,6 +219,7 @@
 			if ( ! nw || ! nh || maxScroll() <= 0 ) {
 				mapWrap.hidden = true;
 				mapWidth = 0;
+				syncEdges();
 				return;
 			}
 			var ratio = nw / nh;

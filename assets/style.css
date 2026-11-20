@@ -59,6 +59,90 @@
 	-webkit-user-drag: none;
 }
 
+/* Scène : porte les fondus et les boutons, par-dessus la zone défilante. */
+.wp-block-w0-panorama-gallery__stage {
+	--panorama-fade: color-mix(in srgb, var(--wp--preset--color--background, Canvas) 70%, transparent);
+
+	position: relative;
+}
+
+/* Fondu sur le bord où il reste de l'image (classes posées par view.js). */
+.wp-block-w0-panorama-gallery__stage::before,
+.wp-block-w0-panorama-gallery__stage::after {
+	content: "";
+	position: absolute;
+	z-index: 1;
+	inset-block: 0;
+	width: clamp(1.5rem, 4vw, 3rem);
+	pointer-events: none;
+	opacity: 0;
+}
+
+.wp-block-w0-panorama-gallery__stage::before {
+	inset-inline-start: 0;
+	background: linear-gradient(to right, var(--panorama-fade), transparent);
+}
+
+.wp-block-w0-panorama-gallery__stage::after {
+	inset-inline-end: 0;
+	background: linear-gradient(to left, var(--panorama-fade), transparent);
+}
+
+.wp-block-w0-panorama-gallery__stage.has-more-start::before,
+.wp-block-w0-panorama-gallery__stage.has-more-end::after {
+	opacity: 1;
+}
+
+/* Boutons ‹ › : seulement avec une souris ou un pavé tactile (au doigt,
+   on fait glisser). La zone reste pilotable au clavier sans eux. */
+.wp-block-w0-panorama-gallery__nav {
+	position: absolute;
+	z-index: 2;
+	inset-block-start: 50%;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 2.75rem;
+	height: 2.75rem;
+	margin: 0;
+	padding: 0;
+	transform: translateY(-50%);
+	border: 1px solid var(--panorama-border);
+	background-color: color-mix(in srgb, var(--wp--preset--color--background, Canvas) 75%, transparent);
+	color: var(--wp--preset--color--foreground, CanvasText);
+	cursor: pointer;
+}
+
+.wp-block-w0-panorama-gallery__nav--prev {
+	inset-inline-start: var(--wp--preset--spacing--20, 0.5rem);
+}
+
+.wp-block-w0-panorama-gallery__nav--next {
+	inset-inline-end: var(--wp--preset--spacing--20, 0.5rem);
+}
+
+.wp-block-w0-panorama-gallery__nav:hover {
+	border-color: var(--panorama-accent);
+	color: var(--panorama-accent);
+}
+
+.wp-block-w0-panorama-gallery__nav svg {
+	display: block;
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.wp-block-w0-panorama-gallery__nav {
+		display: flex;
+	}
+}
+
+.wp-block-w0-panorama-gallery__nav[hidden] {
+	display: none;
+}
+
 /* Miniature de navigation : décorative pour les lecteurs d'écran
    (la zone défilante se pilote au clavier). */
 .wp-block-w0-panorama-gallery__minimap-wrapper {
@@ -96,5 +180,10 @@
 @media (prefers-reduced-motion: no-preference) {
 	.wp-block-w0-panorama-gallery__minimap-viewport {
 		transition: width 0.1s linear;
+	}
+
+	.wp-block-w0-panorama-gallery__stage::before,
+	.wp-block-w0-panorama-gallery__stage::after {
+		transition: opacity 0.2s ease;
 	}
 }
