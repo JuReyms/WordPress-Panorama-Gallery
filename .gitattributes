@@ -1,0 +1,6 @@
+# Fichiers de développement, absents du zip de l'extension (git archive).
+.gitattributes export-ignore
+.gitignore     export-ignore
+.github        export-ignore
+artefact.xml   export-ignore
+ROADMAP.md     export-ignore
