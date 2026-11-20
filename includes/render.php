@@ -91,7 +91,9 @@ function panorama_gallery_render_block( $attributes, $content, $block ) {
 			(int) round( 480 * $ratio ),
 			round( 34 * $ratio, 2 )
 		);
-		$img                     = wp_get_attachment_image( $image['id'], 'full', false, $img_attributes );
+		add_filter( 'max_srcset_image_width', 'panorama_gallery_srcset_max_width' );
+		$img = wp_get_attachment_image( $image['id'], 'full', false, $img_attributes );
+		remove_filter( 'max_srcset_image_width', 'panorama_gallery_srcset_max_width' );
 	} else {
 		$img = '';
 	}
@@ -113,7 +115,7 @@ function panorama_gallery_render_block( $attributes, $content, $block ) {
 	$wrapper = get_block_wrapper_attributes( array( 'class' => 'wp-block-w0-panorama-gallery__container' ) );
 
 	return sprintf(
-		'<figure %1$s><div class="wp-block-w0-panorama-gallery__panorama-wrapper" tabindex="0" role="region" aria-label="%2$s"><div class="wp-block-w0-panorama-gallery__panorama-scroll">%3$s</div></div><div class="wp-block-w0-panorama-gallery__minimap-wrapper" aria-hidden="true" hidden><canvas class="wp-block-w0-panorama-gallery__minimap"></canvas><div class="wp-block-w0-panorama-gallery__minimap-viewport"></div></div></figure>',
+		'<figure %1$s><div class="wp-block-w0-panorama-gallery__stage"><div class="wp-block-w0-panorama-gallery__panorama-wrapper" tabindex="0" role="region" aria-label="%2$s"><div class="wp-block-w0-panorama-gallery__panorama-scroll">%3$s</div></div></div><div class="wp-block-w0-panorama-gallery__minimap-wrapper" aria-hidden="true" hidden><canvas class="wp-block-w0-panorama-gallery__minimap"></canvas><div class="wp-block-w0-panorama-gallery__minimap-viewport"></div></div></figure>',
 		$wrapper,
 		esc_attr( $label ),
 		$img

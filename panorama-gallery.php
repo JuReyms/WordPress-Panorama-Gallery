@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'PANORAMA_GALLERY_VERSION', '2.0.0' );
 
+require_once __DIR__ . '/includes/media.php';
 require_once __DIR__ . '/includes/render.php';
 
 /**
