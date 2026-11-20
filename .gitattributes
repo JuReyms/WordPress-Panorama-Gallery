@@ -5,3 +5,6 @@
 bin            export-ignore
 artefact.xml   export-ignore
 ROADMAP.md     export-ignore
+
+# Les scripts shell gardent des fins de ligne LF, même sous Windows.
+*.sh text eol=lf
