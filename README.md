@@ -22,10 +22,15 @@ Les deux blocs ont le même rendu, fait côté serveur (`includes/render.php`). 
 
 - Molette verticale changée en défilement horizontal ; au bord du panorama, la page reprend la main.
 - Glisser à la souris ; au doigt, défilement natif du navigateur.
+- Boutons ‹ › sur les bords (souris et pavé tactile seulement) et fondu du côté où il reste de l'image.
 - Clavier : la zone défilante reçoit le focus (Tab), puis flèches gauche et droite, Page préc./suiv., Début, Fin.
 - `aria-label` construit sur le texte alternatif, repris de la médiathèque s'il est vide dans le bloc.
 - `prefers-reduced-motion` : défilement instantané, aucune transition.
 - Images responsives (`srcset`, `sizes`) et chargement différé, à partir de l'ID de la médiathèque.
+
+## Pleine définition
+
+WordPress réduit toute image de plus de 2 560 px. Pour une image au moins trois fois plus large que haute, l'extension relève cette limite à 8 192 px (filtre `panorama_gallery_max_width`) et ajoute une taille de 4 096 px. Les autres images ne changent pas. Seuls les téléversements faits après l'activation sont concernés.
 
 ## Couleurs
 
@@ -42,6 +47,7 @@ Hauteur du panorama : variable `--panorama-height` (par défaut `clamp(180px, 34
 ```
 panorama-gallery.php     enregistrement des blocs et des fichiers
 includes/render.php      rendu serveur commun
+includes/media.php       panoramas en pleine définition
 blocks/*/block.json      métadonnées des deux blocs
 assets/editor.js         éditeur (sans étape de construction)
 assets/view.js           comportement sur le site
@@ -59,4 +65,4 @@ Aucune étape de construction : le dossier se déploie tel quel.
 
 ## Journal
 
-Voir [CHANGELOG.md](CHANGELOG.md).
+Voir [CHANGELOG.md](CHANGELOG.md). Idées à venir : [ROADMAP.md](ROADMAP.md).

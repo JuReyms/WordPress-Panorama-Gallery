@@ -10,6 +10,9 @@ Panorama Gallery devient la seule extension panorama de onedeft.com : `lfg-block
 - Images responsives à partir de l'ID de la médiathèque : `srcset`, `sizes` calculé sur les proportions, `loading="lazy"`, `decoding="async"`, largeur et hauteur.
 - Accessibilité : zone défilante atteignable au clavier (`tabindex="0"`, `role="region"`, `aria-label`), flèches gauche et droite, Page préc./suiv., Début, Fin. Focus visible. Texte alternatif modifiable dans l'éditeur ; vide, il est repris de la médiathèque. Miniature masquée aux lecteurs d'écran.
 - Transformation d'une image (`core/image`) en panorama.
+- Panoramas en pleine définition : pour une image au moins trois fois plus large que haute, la réduction automatique de WordPress passe de 2 560 à 8 192 px (filtre `panorama_gallery_max_width`), et une taille de 4 096 px est ajoutée. Les autres images ne changent pas. Seuls les nouveaux téléversements sont concernés.
+- `srcset` des panoramas étendu au-delà des 2 048 px de WordPress.
+- Boutons ‹ › sur les bords, pour la souris et le pavé tactile, masqués au bout du panorama et sur les écrans tactiles. Fondu sur le bord où il reste de l'image.
 - Compatibilité avec `lfg-block-custom` encore active : son bloc panorama et son script `js/panorama.js` sont remplacés, ce qui permet d'activer cette version avant de désactiver l'ancienne extension.
 
 ### Corrigé
