@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "w0/panorama-gallery",
+	"version": "2.0.0",
+	"title": "Panorama",
+	"category": "media",
+	"icon": "format-image",
+	"keywords": [ "panorama", "panoramique", "fresque", "image" ],
+	"description": "Image panoramique défilable horizontalement (molette, glisser, doigt, clavier), avec une miniature de navigation.",
+	"attributes": {
+		"image": {
+			"type": "object",
+			"properties": {
+				"id": { "type": "number" },
+				"url": { "type": "string" },
+				"alt": { "type": "string" }
+			},
+			"default": {}
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "panorama-gallery-block-wp",
+	"editorScript": "panorama-gallery-editor",
+	"editorStyle": "panorama-gallery-editor",
+	"style": "panorama-gallery",
+	"viewScript": "panorama-gallery-view"
+}

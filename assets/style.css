@@ -1,0 +1,100 @@
+/**
+ * Panorama Gallery : rendu du site et de l'éditeur.
+ *
+ * Couleurs tirées des préréglages du thème, avec un repli neutre (gris
+ * translucide, couleur du texte) qui marche sur fond clair comme sombre.
+ * Aucun arrondi ni ombre : c'est au thème d'en ajouter s'il le veut.
+ */
+
+.wp-block-w0-panorama-gallery__container {
+	--panorama-height: clamp(180px, 34vw, 480px);
+	--panorama-surface: var(--wp--preset--color--surface, rgb(128 128 128 / 0.12));
+	--panorama-accent: var(--wp--preset--color--accent, currentColor);
+	--panorama-border: var(--wp--preset--color--border, rgb(128 128 128 / 0.4));
+
+	position: relative;
+	box-sizing: border-box;
+	min-width: 0;
+	max-width: 100%;
+	margin-inline: auto;
+	margin-block: var(--wp--preset--spacing--50, 2rem);
+	padding: 0;
+}
+
+.wp-block-w0-panorama-gallery__panorama-wrapper {
+	position: relative;
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	overscroll-behavior-x: contain;
+	background-color: var(--panorama-surface);
+	scrollbar-color: var(--panorama-accent) transparent;
+	scrollbar-width: thin;
+	cursor: grab;
+	touch-action: pan-x pan-y;
+}
+
+.wp-block-w0-panorama-gallery__panorama-wrapper:focus-visible {
+	outline: 2px solid var(--panorama-accent);
+	outline-offset: 2px;
+}
+
+.wp-block-w0-panorama-gallery__panorama-wrapper.is-dragging {
+	cursor: grabbing;
+	user-select: none;
+}
+
+.wp-block-w0-panorama-gallery__panorama-scroll {
+	display: flex;
+	width: max-content;
+}
+
+.wp-block-w0-panorama-gallery__image {
+	display: block;
+	width: auto;
+	max-width: none;
+	height: var(--panorama-height);
+	pointer-events: none;
+	user-select: none;
+	-webkit-user-drag: none;
+}
+
+/* Miniature de navigation : décorative pour les lecteurs d'écran
+   (la zone défilante se pilote au clavier). */
+.wp-block-w0-panorama-gallery__minimap-wrapper {
+	position: relative;
+	max-width: 100%;
+	margin-block-start: var(--wp--preset--spacing--20, 0.5rem);
+	margin-inline: auto;
+	line-height: 0;
+	cursor: pointer;
+	touch-action: pan-y;
+}
+
+.wp-block-w0-panorama-gallery__minimap-wrapper[hidden] {
+	display: none;
+}
+
+.wp-block-w0-panorama-gallery__minimap {
+	display: block;
+	max-width: 100%;
+	background-color: var(--panorama-surface);
+	outline: 1px solid var(--panorama-border);
+	outline-offset: -1px;
+}
+
+.wp-block-w0-panorama-gallery__minimap-viewport {
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: 0;
+	box-sizing: border-box;
+	border: 2px solid var(--panorama-accent);
+	pointer-events: none;
+	will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.wp-block-w0-panorama-gallery__minimap-viewport {
+		transition: width 0.1s linear;
+	}
+}

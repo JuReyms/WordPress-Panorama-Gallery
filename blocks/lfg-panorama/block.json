@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lfg-block-custom/lfg-block-panorama",
+	"version": "2.0.0",
+	"title": "Panorama (ancien bloc LFG)",
+	"category": "media",
+	"icon": "cover-image",
+	"keywords": [ "LFG", "panorama", "panoramique", "image" ],
+	"description": "Ancien bloc de lfg-block-custom, repris pour les articles existants. Même rendu que le bloc Panorama, vers lequel il peut être transformé.",
+	"attributes": {
+		"pictureID": {
+			"type": "number",
+			"default": null
+		},
+		"pictureURL": {
+			"type": "string",
+			"source": "attribute",
+			"attribute": "src",
+			"selector": "img"
+		},
+		"pictureAlt": {
+			"type": "string",
+			"source": "attribute",
+			"attribute": "alt",
+			"selector": "img"
+		}
+	},
+	"supports": {
+		"html": false,
+		"inserter": false
+	},
+	"textdomain": "panorama-gallery-block-wp",
+	"editorScript": "panorama-gallery-editor",
+	"editorStyle": "panorama-gallery-editor",
+	"style": "panorama-gallery",
+	"viewScript": "panorama-gallery-view"
+}

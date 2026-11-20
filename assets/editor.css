@@ -1,0 +1,7 @@
+/**
+ * Panorama Gallery : éditeur seulement.
+ * L'aperçu défile comme sur le site, sans miniature.
+ */
+.wp-block-w0-panorama-gallery__container .wp-block-w0-panorama-gallery__panorama-wrapper {
+	cursor: default;
+}
