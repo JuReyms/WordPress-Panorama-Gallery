@@ -1,93 +1,62 @@
 # WordPress Panorama Gallery
 
-![WordPress](https://img.shields.io/badge/WordPress-6.0+-blue) ![PHP](https://img.shields.io/badge/PHP-7.4+-green) ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
+![WordPress](https://img.shields.io/badge/WordPress-6.5+-blue) ![PHP](https://img.shields.io/badge/PHP-7.4+-green)
 
 **Contributeurs :** La Ferme Graphique  
 **Tags :** block, panorama, horizontal, image, scroll  
-**Version stable :** 1.0.0  
+**Version stable :** 2.0.0  
 **Licence :** GPL-2.0-or-later
 
-Affichez une grande image panoramique scrollable horizontalement, avec une miniature sous l'image pour naviguer rapidement dans la photo (minimap). Compatible desktop (scroll/souris, drag) et tactile (swipe/tap).
+Affiche une grande image panoramique défilable horizontalement, avec une miniature sous l'image pour naviguer (minimap). Molette, glisser à la souris, glisser au doigt et clavier.
 
-## Description
+## Blocs
 
-Ce bloc permet d'afficher une seule photo panoramique (très large) avec un scroll horizontal directement sur l'image principale. La miniature en-dessous représente l'image entière et propose une navigation rapide : cliquez ou touchez une zone pour sauter instantanément vers la partie correspondante du panorama.
+| Bloc | Rôle |
+|---|---|
+| `w0/panorama-gallery` (« Panorama ») | Le bloc à utiliser. |
+| `lfg-block-custom/lfg-block-panorama` (« Panorama (ancien bloc LFG) ») | Reprise de l'ancien bloc de `lfg-block-custom`, pour les articles existants. Absent de l'outil d'insertion. Se transforme en bloc Panorama depuis la barre d'outils. |
 
-Un outil idéal pour publier des panoramas immersifs, des fresques ou tout visuel très large dans WordPress. La navigation est fluide, adaptée aux interfaces desktop et mobiles.
+Les deux blocs ont le même rendu, fait côté serveur (`includes/render.php`). Le HTML enregistré dans les articles n'est jamais réécrit : il sert à la validation dans l'éditeur.
 
-## Installation
+## Navigation et accessibilité
 
-1. Téléchargez les fichiers du plugin dans le dossier `/wp-content/plugins/panorama-gallery`, ou installez le plugin via l'écran des extensions WordPress.
-2. Activez le plugin via l'écran 'Extensions' de WordPress.
+- Molette verticale changée en défilement horizontal ; au bord du panorama, la page reprend la main.
+- Glisser à la souris ; au doigt, défilement natif du navigateur.
+- Clavier : la zone défilante reçoit le focus (Tab), puis flèches gauche et droite, Page préc./suiv., Début, Fin.
+- `aria-label` construit sur le texte alternatif, repris de la médiathèque s'il est vide dans le bloc.
+- `prefers-reduced-motion` : défilement instantané, aucune transition.
+- Images responsives (`srcset`, `sizes`) et chargement différé, à partir de l'ID de la médiathèque.
 
-## FAQ
+## Couleurs
 
-**Puis-je afficher plusieurs panoramas ?**  
-Non, ce bloc est conçu uniquement pour une seule image panoramique par insertion du bloc. Pour plusieurs panoramas, ajoutez le bloc plusieurs fois.
+Le style lit les préréglages du thème, avec un repli neutre si le thème ne les définit pas :
 
-**La miniature permet-elle une navigation rapide ?**  
-Oui, cliquez ou touchez la miniature pour accéder rapidement à une partie de la grande image.
+- `--wp--preset--color--surface` : fond de la zone et de la miniature ;
+- `--wp--preset--color--accent` : barre de défilement, cadre de la miniature, focus ;
+- `--wp--preset--color--border` : filet de la miniature.
 
-## Captures d'écran
+Hauteur du panorama : variable `--panorama-height` (par défaut `clamp(180px, 34vw, 480px)`), modifiable par le thème.
 
-1. Image panoramique scrollable avec minimap
-2. Interface de l'éditeur pour charger la photo
+## Structure
 
-## Recommandations
+```
+panorama-gallery.php     enregistrement des blocs et des fichiers
+includes/render.php      rendu serveur commun
+blocks/*/block.json      métadonnées des deux blocs
+assets/editor.js         éditeur (sans étape de construction)
+assets/view.js           comportement sur le site
+assets/style.css         styles du site et de l'éditeur
+assets/editor.css        styles de l'éditeur seul
+```
 
-Pour une meilleure expérience, insérez des images très larges (par exemple 3000px x 600px) dans ce bloc pour maximiser l'effet panorama.
+Aucune étape de construction : le dossier se déploie tel quel.
 
----
+## Remplacer lfg-block-custom
 
-## Informations Techniques
+1. Installer et activer Panorama Gallery 2.0.0. Tant que `lfg-block-custom` est active, son bloc panorama et son script sont remplacés par ceux de cette extension.
+2. Contrôler un article à panorama w0 et un article à panorama LFG, sur le site et dans l'éditeur.
+3. Désactiver `lfg-block-custom`.
 
-- **Technologies utilisées :**
-  - WordPress 6.0+
-  - PHP 7.4+
-  - JavaScript (ES6+)
-- **Compatibilité :**
-  - Desktop : scroll/souris, drag
-  - Mobile : swipe/tap
-- **Dépendances :**
-  - Aucun plugin externe requis
+## Journal
 
----
-
-## English Version
-
-### WordPress Panorama Gallery
-
-**Contributors:** La Ferme Graphique  
-**Tags:** block, panorama, horizontal, image, scroll  
-**Stable Version:** 1.0.0  
-**License:** GPL-2.0-or-later
-
-Display a large panoramic image with horizontal scrolling, along with a thumbnail below the image for quick navigation (minimap). Compatible with desktop (scroll/mouse, drag) and touch devices (swipe/tap).
-
-### Description
-
-This block allows you to display a single panoramic photo (very wide) with horizontal scrolling directly on the main image. The thumbnail below represents the entire image and offers quick navigation: click or tap on an area to instantly jump to the corresponding part of the panorama.
-
-An ideal tool for publishing immersive panoramas, frescoes, or any very wide visuals in WordPress. Navigation is smooth and adapted to both desktop and mobile interfaces.
-
-### Installation
-
-1. Upload the plugin files to the `/wp-content/plugins/panorama-gallery` directory, or install the plugin through the WordPress plugins screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress.
-
-### FAQ
-
-**Can I display multiple panoramas?**  
-No, this block is designed for a single panoramic image per block insertion. For multiple panoramas, add the block multiple times.
-
-**Does the thumbnail allow quick navigation?**  
-Yes, click or tap the thumbnail to quickly access a part of the large image.
-
-### Screenshots
-
-1. Scrollable panoramic image with minimap
-2. Editor interface for uploading the photo
-
-### Recommendations
-
-For the best experience, insert very wide images (e.g., 3000px x 600px) into this block to maximize the panorama effect.
+Voir [CHANGELOG.md](CHANGELOG.md).
