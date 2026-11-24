@@ -1,5 +1,9 @@
 # Journal des changements
 
+## 2.0.1 (24/11/2026)
+
+- L’extension s’affiche sous le nom « LFG - Panorama Gallery » dans WordPress.
+
 ## 2.0.0 (20/11/2026)
 
 Panorama Gallery devient la seule extension panorama de onedeft.com : `lfg-block-custom` peut être désactivée sans casser d'article.

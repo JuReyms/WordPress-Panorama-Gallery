@@ -1,4 +1,4 @@
-# WordPress Panorama Gallery
+# LFG - Panorama Gallery
 
 ![WordPress](https://img.shields.io/badge/WordPress-6.5+-blue) ![PHP](https://img.shields.io/badge/PHP-7.4+-green) ![Licence](https://img.shields.io/badge/licence-GPL--2.0--or--later-lightgrey)
 

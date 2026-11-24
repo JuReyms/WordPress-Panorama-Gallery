@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Panorama Gallery
+ * Plugin Name:       LFG - Panorama Gallery
  * Description:       Affiche une image panoramique défilable horizontalement (molette, glisser, doigt, clavier), avec une miniature de navigation. Reprend aussi l'ancien bloc « LFG Panorama » de lfg-block-custom.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            La Ferme Graphique
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PANORAMA_GALLERY_VERSION', '2.0.0' );
+define( 'PANORAMA_GALLERY_VERSION', '2.0.1' );
 
 require_once __DIR__ . '/includes/media.php';
 require_once __DIR__ . '/includes/render.php';
