@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       LFG - Panorama Gallery
  * Description:       Affiche une image panoramique défilable horizontalement (molette, glisser, doigt, clavier), avec une miniature de navigation. Reprend aussi l'ancien bloc « LFG Panorama » de lfg-block-custom.
- * Version:           2.0.1
+ * Version:           2.0.2
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            La Ferme Graphique
@@ -19,10 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PANORAMA_GALLERY_VERSION', '2.0.1' );
+define( 'PANORAMA_GALLERY_VERSION', '2.0.2' );
 
 require_once __DIR__ . '/includes/media.php';
 require_once __DIR__ . '/includes/render.php';
+if ( is_admin() ) {
+	require_once __DIR__ . '/includes/admin.php';
+}
 
 /**
  * Enregistre les scripts et styles partagés par les deux blocs.
@@ -53,6 +56,13 @@ function panorama_gallery_register_assets() {
 	wp_register_style( 'panorama-gallery-editor', $url . 'editor.css', array(), $version );
 }
 
+function panorama_gallery_block_folders() {
+	return array(
+		'w0/panorama-gallery'                => 'panorama-gallery',
+		'lfg-block-custom/lfg-block-panorama' => 'lfg-panorama',
+	);
+}
+
 /**
  * Enregistre les deux blocs.
  *
@@ -64,12 +74,7 @@ function panorama_gallery_register_blocks() {
 	panorama_gallery_register_assets();
 
 	$registry = WP_Block_Type_Registry::get_instance();
-	$blocks   = array(
-		'w0/panorama-gallery'                 => 'panorama-gallery',
-		'lfg-block-custom/lfg-block-panorama' => 'lfg-panorama',
-	);
-
-	foreach ( $blocks as $name => $folder ) {
+	foreach ( panorama_gallery_block_folders() as $name => $folder ) {
 		if ( $registry->is_registered( $name ) ) {
 			$registry->unregister( $name );
 		}

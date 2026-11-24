@@ -76,6 +76,10 @@ Aucune étape de construction : le dossier se déploie tel quel.
 2. Contrôler un article à panorama w0 et un article à panorama LFG, sur le site et dans l'éditeur.
 3. Désactiver `lfg-block-custom`.
 
+### Retrouver les articles avec un panorama
+
+Dans **Articles → Tous les articles**, les filtres **Avec un bloc Panorama** et **Sans bloc Panorama** se combinent avec les catégories de WordPress. Les deux formats de bloc sont reconnus, y compris dans un groupe.
+
 ### Publier une version
 
 1. Passer la version dans l'en-tête de `panorama-gallery.php` et dans `PANORAMA_GALLERY_VERSION`.

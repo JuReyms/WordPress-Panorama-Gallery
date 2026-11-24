@@ -1,5 +1,9 @@
 # Journal des changements
 
+## 2.0.2 (24/11/2026)
+
+- La liste des articles propose un filtre « Avec un bloc Panorama » ou « Sans bloc Panorama », cumulable avec les catégories de WordPress.
+
 ## 2.0.1 (24/11/2026)
 
 - L’extension s’affiche sous le nom « LFG - Panorama Gallery » dans WordPress.
